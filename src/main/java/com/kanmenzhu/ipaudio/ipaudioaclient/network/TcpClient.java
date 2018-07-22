@@ -33,7 +33,7 @@ public class TcpClient {
     
     private static final Bootstrap getBootstrap() {
 		try {
-			client = new Socket("118.25.132.80", 6002);
+			client = new Socket("MediaCoreIP", 6002);
 			// 读取服务器端数据
     	     output = new DataOutputStream(client.getOutputStream());
 		} catch (IOException e) {
