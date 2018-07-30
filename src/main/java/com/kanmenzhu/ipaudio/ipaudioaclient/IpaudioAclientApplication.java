@@ -10,6 +10,6 @@ public class IpaudioAclientApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IpaudioAclientApplication.class, args);
 
-		Sample.sendMp3();
+		Sample.sendMp3(-1);
 	}
 }

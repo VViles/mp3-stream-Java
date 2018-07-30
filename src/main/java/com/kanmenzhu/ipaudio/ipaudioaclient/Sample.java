@@ -3,7 +3,6 @@ package com.kanmenzhu.ipaudio.ipaudioaclient;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.kanmenzhu.ipaudio.ipaudioaclient.network.TcpClient;
-import com.sun.xml.internal.ws.client.sei.ResponseBuilder;
 import io.netty.buffer.ByteBufUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +25,8 @@ public class Sample {
     /**
      * 发一个mp3测试
      */
-    public static void sendMp3() {
-        String seedCode = "SEED编码";
+    public static void sendMp3(int num) {
+        String seedCode = "seed_code";
         JSONObject connectCmd = new JSONObject();
         connectCmd.put("cmd", "PLAYLIST");
         connectCmd.put("ulevel", 99);
@@ -42,7 +41,7 @@ public class Sample {
 
 
         //发送mp3
-        String mp3 = "/Users/VVILEX/Downloads/20180622001.mp3";
+        String mp3 = "C:\\Users\\Administrator\\Desktop\\1\\tmp\\20180622001.mp3";
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -57,10 +56,13 @@ public class Sample {
             Map<String, Integer> header = parseHeader(Arrays.copyOfRange(allData, 0, 24));
             int[] packageLenArr = parseAllPackageLen(Arrays.copyOfRange(allData, header.get("LEN") + 24,
                     allData.length), header.get("PACKAGE_COUNT"));
+            if(packageLenArr.length<num){
+            	return;
+            }
             //ByteBuf byteBuf= allData;
             TcpClient.sendByteArray((data.length() + "\n" + data).getBytes(StandardCharsets.UTF_8));
             logger.info("send {} bytes mp3 audio to server", allData.length);
-            sendAudio(allData, packageLenArr, header.get("DELAY"));
+            sendAudio(allData, packageLenArr, header.get("DELAY"),num);
 
 
         } catch (Exception e) {
@@ -96,19 +98,21 @@ public class Sample {
         return packageLenArr;
     }
 
-    private static void sendAudio(byte[] allData, int[] packageLenArr, int delayMs) {
+    private static void sendAudio(byte[] allData, int[] packageLenArr, int delayMs,int num) {
         int pos = 24;
-        for (int pkgLen : packageLenArr) {
-            logger.info("send {} bytes to server", pkgLen);
-            //TcpClient.sendByteArray(Arrays.copyOfRange(allData, pos, pos + pkgLen));
-            TcpClient.sendByteArray(Arrays.copyOfRange(allData, pos, pos + pkgLen));
-            pos += pkgLen;
-            try {
-                TimeUnit.MILLISECONDS.sleep(150);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+        for(int i=0;i<packageLenArr.length;i++){
+        	int pkgLen = packageLenArr[i];
+        	if((i+1)>=num||num==-1){
+        		logger.info("send {} bytes to server", pkgLen);
+                //TcpClient.sendByteArray(Arrays.copyOfRange(allData, pos, pos + pkgLen));
+                TcpClient.sendByteArray(Arrays.copyOfRange(allData, pos, pos + pkgLen));
+                try {
+                    TimeUnit.MILLISECONDS.sleep(150);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+        	}
+        	pos += pkgLen;
         }
     }
 
