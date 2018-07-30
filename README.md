@@ -1,3 +1,5 @@
+##支持断点续播
+
 # mp3-stream-Java
 MP3解码推流（java版）
 
