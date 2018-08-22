@@ -6,6 +6,8 @@ MP3解码推流（java版）
 #TcpClient.java
 第 26、27、36行
 
+#Sample.java
+第 29行
 
 #IpaudioAclientApplication.java 
 第13行

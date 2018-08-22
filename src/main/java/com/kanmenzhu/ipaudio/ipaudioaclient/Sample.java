@@ -61,9 +61,10 @@ public class Sample {
             }
             //ByteBuf byteBuf= allData;
             TcpClient.sendByteArray((data.length() + "\n" + data).getBytes(StandardCharsets.UTF_8));
-            logger.info("send {} bytes mp3 audio to server", allData.length);
-            sendAudio(allData, packageLenArr, header.get("DELAY"),num);
-
+            if (data.equals("WELL")) {
+            	logger.info("send {} bytes mp3 audio to server", allData.length);
+            	sendAudio(allData, packageLenArr, header.get("DELAY"),num);
+            }
 
         } catch (Exception e) {
             logger.error("send failed", e);
